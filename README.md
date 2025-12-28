@@ -5,8 +5,6 @@ The platform enables creators to showcase their channels and sponsorship history
 
 > **Status:** This project is actively under development. Features, schemas, and workflows are evolving.
 
----
-
 ## Core Concept
 
 BrandTube operates as a two-sided platform:
@@ -14,7 +12,6 @@ BrandTube operates as a two-sided platform:
 - **Brands** discover creators, initiate offers, and manage collaborations
 - **Proposals/Offers** follow a defined lifecycle from draft to completion and approval
 
----
 
 ## Entities
 
@@ -39,7 +36,6 @@ Creators represent individual content creators on the platform.
 - Currency:
   - Creators receive payments in their own local currency
 
----
 
 ### Brand / Business
 
@@ -54,7 +50,6 @@ Brands represent businesses seeking collaborations with creators.
 - Active sponsorships dashboard
 - Ability to initiate sponsorship offers
 
----
 
 ### Proposal / Offer
 
@@ -76,7 +71,6 @@ Once accepted:
 Terminal states:
 - `CANCELED`
 
----
 
 ### Proposal Details
 
@@ -104,7 +98,6 @@ Each proposal includes:
   - Created time
   - Updated time
 
----
 
 ## Tech Stack
 
