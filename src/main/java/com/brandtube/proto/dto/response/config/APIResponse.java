@@ -107,9 +107,6 @@ public class APIResponse<T> {
     public Map<String, Object> any(){
         if(!isProcessed){
             processData();
-            System.out.println("Processed lazily");
-            System.out.println(processedAny);
-            System.out.println("called by " + Arrays.toString(Thread.currentThread().getStackTrace()));
         }
         return this.processedAny;
     }

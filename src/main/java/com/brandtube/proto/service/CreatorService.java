@@ -30,7 +30,6 @@ public class CreatorService {
             if (passwordEncoder.matches(loginRequest.getPassword(), creator.getPassword())) {
                 String token = jwtUtil.generateToken(creator.getId(), Role.CREATOR.name(), creator.getEmail());
                 AuthResponse data = AuthResponse.builder().token(token).userId(creator.getId()).userType(Role.CREATOR.name()).build();
-                System.out.println(data);
                 return data;
             }
         }
