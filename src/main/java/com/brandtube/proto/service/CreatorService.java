@@ -29,9 +29,24 @@ public class CreatorService {
             Creator creator = creatorOptional.get();
             if (passwordEncoder.matches(loginRequest.getPassword(), creator.getPassword())) {
                 String token = jwtUtil.generateToken(creator.getId(), Role.CREATOR.name(), creator.getEmail());
-                return AuthResponse.builder().token(token).userId(creator.getId()).userType(Role.CREATOR.name()).build();
+                AuthResponse data = AuthResponse.builder().token(token).userId(creator.getId()).userType(Role.CREATOR.name()).build();
+                System.out.println(data);
+                return data;
             }
         }
-        throw new CustomExceptions("Unauthorized " + Role.CREATOR.name().toLowerCase());
+        throw new CustomExceptions("The provided " + Role.CREATOR.name().toLowerCase() + " login credentials are invalid.");
+    }
+
+    public String registerCreator(Creator creator) {
+        if (creatorRepository.findByEmail(creator.getEmail()).isPresent()) {
+            throw new CustomExceptions("Creator with email " + creator.getEmail() + " already exists");
+        }
+        creator.setPassword(passwordEncoder.encode(creator.getPassword()));
+        Creator savedCreator = creatorRepository.save(creator);
+        return "Creator registered with ID: " + savedCreator.getId();
+    }
+
+    public String securedCreatorMethod() {
+        return "Accessed secured endpoint for Creator successfully!";
     }
 }

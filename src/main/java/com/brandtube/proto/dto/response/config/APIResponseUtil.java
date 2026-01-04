@@ -53,4 +53,28 @@ public class APIResponseUtil {
         return constructResponseEntity(HttpStatus.FORBIDDEN, data, message);
     }
 
+    public static <C> ResponseEntity<APIResponse<C>> notFound(C data) {
+        return constructResponseEntity(HttpStatus.NOT_FOUND, data);
+    }
+
+    public static <C> ResponseEntity<APIResponse<C>> notFound(C data, String message) {
+        return constructResponseEntity(HttpStatus.NOT_FOUND, data, message);
+    }
+
+    public static <C> ResponseEntity<APIResponse<C>> badRequest(C data) {
+        return constructResponseEntity(HttpStatus.BAD_REQUEST, data);
+    }
+
+    public static <C> ResponseEntity<APIResponse<C>> badRequest(C data, String message) {
+        return constructResponseEntity(HttpStatus.BAD_REQUEST, data, message);
+    }
+
+    public static <C> ResponseEntity<APIResponse<C>> internalServerError(C data) {
+        return constructResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, data);
+    }
+
+    public static <C> ResponseEntity<APIResponse<C>> internalServerError(C data, String message) {
+        return constructResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, data, message);
+    }
+
 }

@@ -1,12 +1,10 @@
 package com.brandtube.proto.dto.response.config;
 
 import com.brandtube.proto.exceptions.CustomExceptions;
+import com.brandtube.proto.exceptions.ServerException;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
@@ -14,6 +12,9 @@ import com.google.common.base.CaseFormat;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,28 +25,49 @@ import java.util.Map;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class APIResponse<T> {
 
+    private HttpStatus code;
     @JsonIgnore
-    String message = null;
-    HttpStatus code;
+    private String message = null;
     @JsonIgnore
-    T data;
+    private T data;
 
-    private Object getReturnData(APIResponseConfig ant, Class<?> dataClass) throws NoSuchFieldException, IllegalAccessException {
+    @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Map<String, Object> processedAny = null;
+    @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private boolean isProcessed = false;
+
+    private Object getReturnData(APIResponseConfig ant, Class<?> dataClass) {
         Object returnData = data;
         if (ant.isCollection()) {
             APIResponseCollectionConfig collectionConfig = dataClass.getAnnotation(APIResponseCollectionConfig.class);
             if (collectionConfig == null) {
-                throw new CustomExceptions("APIResponseCollectionConfig annotation is missing on class " + dataClass.getSimpleName());
+                throw new ServerException(APIResponseCollectionConfig.class.getSimpleName() + " annotation is missing on class " + dataClass.getSimpleName());
             }
             String collectionFieldName = collectionConfig.fieldName();
-            Field field = dataClass.getField(collectionFieldName);
-            returnData = field.get(data);
+            Field field;
+            try {
+                field = dataClass.getDeclaredField(collectionFieldName);
+                if(!Modifier.isPublic(field.getModifiers())){
+                    throw new ServerException("Field " + collectionFieldName + " is not public in class " + dataClass.getSimpleName());
+                }
+                returnData = field.get(data);
+
+            } catch (NoSuchFieldException e) {
+                throw new ServerException("Field " + collectionFieldName + " not found in class " + dataClass.getSimpleName());
+            } catch (IllegalAccessException e) {
+                throw new ServerException("Cannot access field " + collectionFieldName + " in class " + dataClass.getSimpleName());
+            }
+
         }
         return returnData;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> any() throws NoSuchFieldException, IllegalAccessException {
+
+    public void processData() {
 
         Map <String, Object> map = new HashMap<>();
 
@@ -54,24 +76,41 @@ public class APIResponse<T> {
         }
 
         if(data == null){
-            return map;
+            this.processedAny = map;
+            this.isProcessed = true;
+            return;
         }
 
         Class<?> dataClass = data.getClass();
         APIResponseConfig ant = dataClass.getAnnotation(APIResponseConfig.class);
 
         if (ant == null) {
-            throw new CustomExceptions("APIResponseConfig annotation is missing on class " + data.getClass().getSimpleName());
+            throw new ServerException(APIResponseConfig.class.getSimpleName() + " annotation is missing on class " + data.getClass().getSimpleName());
         }
 
-        String key = ant.name();
+        String key;
         if (ant.classNameToSnakeCase()) {
             key = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, dataClass.getSimpleName());
+        }
+        else {
+            key = ant.name();
         }
 
         Object returnData = getReturnData(ant, dataClass);
 
         map.put(key, returnData);
-        return map;
+        this.processedAny = map;
+        this.isProcessed = true;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> any(){
+        if(!isProcessed){
+            processData();
+            System.out.println("Processed lazily");
+            System.out.println(processedAny);
+            System.out.println("called by " + Arrays.toString(Thread.currentThread().getStackTrace()));
+        }
+        return this.processedAny;
     }
 }

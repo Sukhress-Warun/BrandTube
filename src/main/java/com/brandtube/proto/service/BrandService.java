@@ -32,7 +32,7 @@ public class BrandService {
                 return AuthResponse.builder().token(token).userId(brand.getId()).userType(Role.BRAND.name()).build();
             }
         }
-        throw new CustomExceptions("Unauthorized " + Role.BRAND.name().toLowerCase());
+        throw new CustomExceptions("The provided " + Role.BRAND.name().toLowerCase() + " login credentials are invalid.");
     }
 
 }
