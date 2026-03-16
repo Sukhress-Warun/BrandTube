@@ -1,4 +1,4 @@
-package com.brandtube.proto.dto.response.config;
+package com.brandtube.proto.response.constructor;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

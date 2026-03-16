@@ -1,6 +1,5 @@
-package com.brandtube.proto.dto.response.config;
+package com.brandtube.proto.response.constructor;
 
-import com.brandtube.proto.exceptions.CustomExceptions;
 import com.brandtube.proto.exceptions.ServerException;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,8 +12,6 @@ import com.google.common.base.CaseFormat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 

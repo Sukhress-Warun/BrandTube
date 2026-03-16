@@ -1,4 +1,4 @@
-package com.brandtube.proto.dto.response.config;
+package com.brandtube.proto.response.constructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

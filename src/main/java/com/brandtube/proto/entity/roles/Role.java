@@ -1,4 +1,4 @@
-package com.brandtube.proto.security.role;
+package com.brandtube.proto.entity.roles;
 
 public enum Role {
     CREATOR,

@@ -1,6 +1,6 @@
 package com.brandtube.proto.dto.response;
 
-import com.brandtube.proto.dto.response.config.APIResponseConfig;
+import com.brandtube.proto.response.constructor.APIResponseConfig;
 import lombok.*;
 
 @Data

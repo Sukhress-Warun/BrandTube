@@ -1,6 +1,6 @@
 package com.brandtube.proto.aspects;
 
-import com.brandtube.proto.dto.response.config.APIResponse;
+import com.brandtube.proto.response.constructor.APIResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

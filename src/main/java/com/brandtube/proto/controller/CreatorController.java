@@ -1,14 +1,20 @@
 package com.brandtube.proto.controller;
 
+import com.brandtube.proto.dto.entityDTO.CreatorDto;
+import com.brandtube.proto.dto.marker.Create;
 import com.brandtube.proto.dto.request.LoginRequest;
 import com.brandtube.proto.dto.response.AuthResponse;
-import com.brandtube.proto.dto.response.config.APIResponse;
-import com.brandtube.proto.dto.response.config.APIResponseUtil;
+import com.brandtube.proto.entity.Creator;
+import com.brandtube.proto.entity.roles.Role;
+import com.brandtube.proto.mapper.Transform;
+import com.brandtube.proto.response.constructor.APIResponse;
+import com.brandtube.proto.response.constructor.APIResponseUtil;
 import com.brandtube.proto.service.CreatorService;
-import jakarta.validation.Valid;
+import com.brandtube.proto.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,16 +23,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/creator")
 public class CreatorController {
 
+    final UserService userService;
     final CreatorService creatorService;
+    final Transform transform;
 
     @PostMapping("/login")
-    public ResponseEntity<APIResponse<AuthResponse>> loginCreator(@RequestBody LoginRequest loginRequest) {
-        return APIResponseUtil.ok(creatorService.AuthenticateCreator(loginRequest));
+    public ResponseEntity<APIResponse<AuthResponse>> loginCreator(@Validated @RequestBody LoginRequest loginRequest) {
+        loginRequest.setRole(Role.CREATOR);
+        return APIResponseUtil.ok(userService.AuthenticateUser(loginRequest));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<APIResponse<Object>> registerCreator(@Valid @RequestBody com.brandtube.proto.entity.Creator creator) {
-        return APIResponseUtil.created(null, creatorService.registerCreator(creator));
+    public ResponseEntity<APIResponse<CreatorDto>> registerCreator(@Validated(Create.class) @RequestBody CreatorDto creatorDTO) {
+        Creator creator = transform.toEntity(creatorDTO);
+        Creator registeredCreator = creatorService.registerCreator(creator);
+        return APIResponseUtil.created(transform.toDTO(registeredCreator));
     }
 
     @GetMapping("/secured")

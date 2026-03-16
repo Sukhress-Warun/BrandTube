@@ -1,7 +1,7 @@
 package com.brandtube.proto.dto.response.errors;
 
-import com.brandtube.proto.dto.response.config.APIResponseCollectionConfig;
-import com.brandtube.proto.dto.response.config.APIResponseConfig;
+import com.brandtube.proto.response.constructor.APIResponseCollectionConfig;
+import com.brandtube.proto.response.constructor.APIResponseConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @APIResponseConfig(isCollection = true, name = "errors")
 @APIResponseCollectionConfig(fieldName = "errors")
-public class ValidErrorResponse {
+public class InvalidErrorResponse {
     public List<String> errors;
 }

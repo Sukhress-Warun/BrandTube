@@ -1,36 +1,16 @@
 package com.brandtube.proto.entity;
 
+import com.brandtube.proto.entity.base.UserProfileBaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "brands")
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
-@NoArgsConstructor
-public class Brand {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column
-    private String description;
-
-    @Column
-    private String about;
+public class Brand extends UserProfileBaseEntity {
 
 }

@@ -1,8 +1,8 @@
 package com.brandtube.proto.aspects;
 
-import com.brandtube.proto.dto.response.errors.ValidErrorResponse;
-import com.brandtube.proto.dto.response.config.APIResponse;
-import com.brandtube.proto.dto.response.config.APIResponseUtil;
+import com.brandtube.proto.dto.response.errors.InvalidErrorResponse;
+import com.brandtube.proto.response.constructor.APIResponse;
+import com.brandtube.proto.response.constructor.APIResponseUtil;
 import com.brandtube.proto.exceptions.CustomExceptions;
 import com.brandtube.proto.exceptions.ServerException;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +27,13 @@ public class GlobalExceptions {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<APIResponse<ValidErrorResponse>> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<APIResponse<InvalidErrorResponse>> handleValidationException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.toList());
-        ValidErrorResponse errorResponse = new ValidErrorResponse();
+        InvalidErrorResponse errorResponse = new InvalidErrorResponse();
         errorResponse.setErrors(errors);
         return APIResponseUtil.badRequest(errorResponse);
     }
